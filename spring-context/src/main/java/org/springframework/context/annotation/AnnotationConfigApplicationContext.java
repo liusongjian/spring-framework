@@ -62,7 +62,25 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		// 1. 会隐式调用父类的构造方法，初始化DefaultListableBeanFactory
+		/**
+		 * 创建一个读取注解的Bean定义读取器
+		 * bean定义：BeanDefinition
+		 *
+		 * 完成了spring内部BeanDefinition的注册（主要是后置处理器）
+		 */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		/**
+		 * 创建BeanDefinition扫描器
+		 * 可以用来扫描包或者类，继而转换为bd
+		 *
+		 * spring默认的扫描器其实不是这个scanner对象
+		 * 而是在后面自己又重新new了一个ClassPathBeanDefinitionScanner
+		 * spring在执行工程后置处理器ConfigurationClassPostProcessor时，去扫描包时会new一个ClassPathBeanDefinitionScanner
+		 *
+		 * 这里的scanner仅仅是为了程序员可以手动调用AnnotationConfigApplicationContext对象的scan方法
+		 *
+		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -73,6 +91,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext(DefaultListableBeanFactory beanFactory) {
 		super(beanFactory);
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		// 注册默认filter 主要是 @Component 注解过滤器
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -83,8 +102,11 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
+		// 初始化内置Bean定义和Bean定义扫描器
 		this();
+		// 注册构造器中传入的【配置类】  @Configuration
 		register(annotatedClasses);
+		// 刷新容器
 		refresh();
 	}
 

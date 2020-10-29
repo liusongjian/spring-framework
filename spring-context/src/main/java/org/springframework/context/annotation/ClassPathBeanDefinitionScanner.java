@@ -101,7 +101,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * normal {@code BeanFactory} implementations are not.
 	 * @param registry the {@code BeanFactory} to load bean definitions into, in the form
 	 * of a {@code BeanDefinitionRegistry}
-	 * @param useDefaultFilters whether to include the default filters for the
+	 * @param useDefaultFilters 是否加入默认的扫描策略
 	 * {@link org.springframework.stereotype.Component @Component},
 	 * {@link org.springframework.stereotype.Repository @Repository},
 	 * {@link org.springframework.stereotype.Service @Service}, and
@@ -275,6 +275,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		for (String basePackage : basePackages) {
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				// 判断bean是否是单例的
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);

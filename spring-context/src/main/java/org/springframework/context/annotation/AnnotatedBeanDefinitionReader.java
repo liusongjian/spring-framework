@@ -83,8 +83,8 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
-		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
-		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
+		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null); // @Conditional 注解解析器
+		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);// 将一堆注解的后置处理器加到Bean定义容器
 	}
 
 
@@ -278,7 +278,7 @@ public class AnnotatedBeanDefinitionReader {
 				customizer.customize(abd);
 			}
 		}
-
+		// 将Bean class 注入bean容器
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);

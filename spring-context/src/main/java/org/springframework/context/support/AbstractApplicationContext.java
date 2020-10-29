@@ -515,6 +515,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			// 刷新的准备工作，记录容器启动的时间，并设置容器处于活跃状态。
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
@@ -528,6 +529,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
+				// 调用BeanFactory后置处理器
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -537,15 +539,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				// 初始化应用事件广播器 观察者模式
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				// 子类重写这个方法，在容器刷新的时候可以自定义逻辑；
+				// String boot 用来启动Tomcat
 				onRefresh();
 
 				// Check for listener beans and register them.
+				// 给容器中将所有项目里面的ApplicationListener注册进来
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				// 初始化所有剩下的单实例bean
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
